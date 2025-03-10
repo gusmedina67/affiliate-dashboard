@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import MainDashboard from "./pages/MainDashboard";
+import CustomerAffiliateDashboard from "./pages/customer/CustomerAffiliateDashboard";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <MainComponent />
+    </Router>
+  );
+}
+
+function MainComponent() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const customerId = searchParams.get("customerId");
+  const tenantId = searchParams.get("tenantId");
+
+  return customerId ? (
+    <CustomerAffiliateDashboard customerId={customerId} tenantId={tenantId} />
+  ) : (
+    <MainDashboard tenantId={tenantId} />
   );
 }
 
 export default App;
+
+
