@@ -45,9 +45,14 @@ function getAuthHeaders(service) {
 }
 
 // ✅ Function to Make API Requests with Axios
-export async function fetchData(service, endpoint, method = "GET", body = null) {
+//export async function fetchData(service, endpoint, method = "GET", body = null) {
+export async function fetchData(service, endpoint, method = "GET", body = null, customHeaders = {}) {
   const url = getApiUrl(service, endpoint);
-  const headers = getAuthHeaders(service);
+  //const headers = getAuthHeaders(service);
+  const headers = {
+    ...getAuthHeaders(service), // ✅ Add authentication headers
+    ...customHeaders,           // ✅ Add any extra headers passed
+  };
 
   console.log("[Axios] Sending Request:", { url, headers });
 
