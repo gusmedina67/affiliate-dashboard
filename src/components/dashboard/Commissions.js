@@ -204,6 +204,23 @@ export default function Commissions({ tenantId }) {
     }
   };
 
+  /** ✅ Handle Blur and Keyboard Events for Auto-Saving */
+  const handleInputBlur = (productId) => {
+    saveCommissionRate(productId);
+  };
+
+  const handleKeyDown = (e, productId, index) => {
+    if (e.key === "Enter" || e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextInput = document.querySelector(`[data-index="${index + 1}"]`);
+      if (nextInput) nextInput.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevInput = document.querySelector(`[data-index="${index - 1}"]`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
   return (
     <Card>
       <CardContent>
@@ -249,32 +266,36 @@ export default function Commissions({ tenantId }) {
             <Input
               type="text"
               placeholder="Search products..."
-              className="mt-4 p-2 border border-gray-300 rounded-md w-full"
+              className="search-product"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
             />
 
             <table className="w-full border-collapse border border-gray-300 mt-4">
-              <thead>
+            <thead>
                 <tr className="bg-gray-100">
                   <th>Product ID</th>
                   <th>Title</th>
                   <th>Type</th>
                   <th>Commission Rate (%)</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {products.map((product, index) => (
                   <tr key={product.id}>
                     <td>{product.id}</td>
                     <td>{product.title}</td>
                     <td>{product.type}</td>
                     <td>
-                      <Input type="number" value={updatedRates[product.id] ?? product.appData?.["affiliate-marketing"]?.commissionRate ?? ""} onChange={(e) => handleRateChange(product.id, e.target.value)} />
-                    </td>
-                    <td>
-                      <Button onClick={() => saveCommissionRate(product.id)}>Save</Button>
+                      <Input
+                        type="number"
+                        data-index={index}
+                        value={updatedRates[product.id] ??
+                          product.appData?.["affiliate-marketing"]?.commissionRate ?? ""}
+                        onChange={(e) => handleRateChange(product.id, e.target.value)}
+                        onBlur={() => handleInputBlur(product.id)}
+                        onKeyDown={(e) => handleKeyDown(e, product.id, index)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -283,7 +304,7 @@ export default function Commissions({ tenantId }) {
 
             {/* ✅ Pagination Logic (YOUR VERSION) */}
             {!isSearching && (
-              <div className="mt-4 flex justify-between">
+              <div className="pagination-container">
                 <Button disabled={previousCursors.length === 0} onClick={() => {
                   const prevCursor = previousCursors[previousCursors.length - 2] || "start";
                   setPreviousCursors((prev) => prev.slice(0, -1));
@@ -291,7 +312,7 @@ export default function Commissions({ tenantId }) {
                 }}>
                   Previous
                 </Button>
-                <p className="text-sm">Showing {products.length} products</p>
+                <p className="pagination-text">Showing {products.length} products</p>
                 <Button disabled={!productCursor} onClick={() => fetchProducts(productCursor)}>Next</Button>
               </div>
             )}

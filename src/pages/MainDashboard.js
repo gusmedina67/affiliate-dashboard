@@ -11,7 +11,7 @@ export default function MainDashboard({ tenantId }) {
 
   return (
     <div className="container">
-      <h1 className="text-2xl font-bold mb-4">Affiliate Management for {tenantId}</h1>
+      {/* <h1 className="text-2xl font-bold mb-4">Affiliate Management for {tenantId}</h1> */}
 
       {/* Tabs Navigation */}
       <nav className="tabs">

@@ -6,6 +6,9 @@ import { fetchData } from "./utils/api"; // ✅ Import API utility
 
 function App() {  
   useEffect(() => {
+    // ✅ Set Page Title
+    document.title = "GSATi Affiliate App";
+    
     // ✅ Check if the script is already present
     if (!document.querySelector(`script[src="https://dev-center.platform.commerce7.com/v2/commerce7.js"]`)) {
       const script = document.createElement("script");
@@ -36,6 +39,13 @@ function MainComponent() {
   const [loading, setLoading] = useState(true);
 
   const isFetching = useRef(false); // ✅ Prevent duplicate requests
+
+   // ✅ Apply Theme on Mount or When Theme Changes
+   useEffect(() => {
+    if (adminUITheme) {
+      document.documentElement.setAttribute("data-theme", adminUITheme); // ✅ Set theme attribute
+    }
+  }, [adminUITheme]);
 
   useEffect(() => {
     if (isFetching.current) return;
